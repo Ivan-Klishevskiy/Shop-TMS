@@ -1,5 +1,6 @@
 package shopUnit;
 
+import java.time.LocalTime;
 import java.util.stream.Collectors;
 
 public class Menu {
@@ -19,17 +20,26 @@ public class Menu {
                             |_2)_Вывод всех товаров_____________|
                             |_3)_Редактировать товар____________|
                             |_4)_Удалить товар__________________|
+                            |_5)_Сохранить товары в JSON формате|
+                            |_6)_Создать список из JSON_________|
                             |_0)_Выход из программы_____________|
                             *************************************
                             """
             );
             System.out.print("|->");
 
-            switch (ioService.getInt(0, 4)) {
+            switch (ioService.getInt(0, 6)) {
                 case 1 -> addingFunction(shop);
                 case 2 -> printFunction(shop);
                 case 3 -> editFunction(shop);
                 case 4 -> removeFunction(shop);
+                case 5 -> ioService.objectToJson(shop, "src/main/java/shopUnit/shopFile.json");
+                case 6 -> {
+                    Shop temp = ioService.jsonToObject("src/main/java/shopUnit/shopFile.json");
+                    if(temp!=null){
+                        shop=temp;
+                    }
+                }
                 case 0 -> {
                     ioService.saveObject("src/main/java/shopUnit/save.bat", shop);
                     System.out.println("Завершение программы...");
@@ -75,7 +85,7 @@ public class Menu {
         System.out.print("Введите id нового продукта: ");
         int id = ioService.getInt(0, Integer.MAX_VALUE);
 
-        shop.addProduct(new Product(id, name, price));
+        shop.addProduct(new Product(id, name, price, LocalTime.now()));
     }
 
     private void sortByRange(Shop shop, int outputLocation) {
