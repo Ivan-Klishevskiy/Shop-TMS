@@ -52,7 +52,7 @@ public class IOService {
         }
     }
 
-    public void writeInFile(String way, String txt) {
+    public synchronized void writeInFile(String way, String txt) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(way))) {
             writer.write(txt);
         } catch (IOException ex) {
