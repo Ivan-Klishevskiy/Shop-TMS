@@ -7,7 +7,8 @@ public class Menu {
     IOService ioService = new IOService();
 
     public void start() {
-        Shop shop = ioService.readObject("src/main/java/shopUnit/save.bat");
+        Shop shop = ioService.jsonToObject("src/main/java/shopUnit/shopFile.json");
+        ;
         if (shop == null) {
             shop = new Shop();
         }
@@ -20,8 +21,6 @@ public class Menu {
                             |_2)_Вывод всех товаров_____________|
                             |_3)_Редактировать товар____________|
                             |_4)_Удалить товар__________________|
-                            |_5)_Сохранить товары в JSON формате|
-                            |_6)_Создать список из JSON_________|
                             |_0)_Выход из программы_____________|
                             *************************************
                             """
@@ -33,15 +32,8 @@ public class Menu {
                 case 2 -> printFunction(shop);
                 case 3 -> editFunction(shop);
                 case 4 -> removeFunction(shop);
-                case 5 -> ioService.objectToJson(shop, "src/main/java/shopUnit/shopFile.json");
-                case 6 -> {
-                    Shop temp = ioService.jsonToObject("src/main/java/shopUnit/shopFile.json");
-                    if(temp!=null){
-                        shop=temp;
-                    }
-                }
                 case 0 -> {
-                    ioService.saveObject("src/main/java/shopUnit/save.bat", shop);
+                    ioService.objectToJson(shop, "src/main/java/shopUnit/shopFile.json");
                     System.out.println("Завершение программы...");
                     return;
                 }
