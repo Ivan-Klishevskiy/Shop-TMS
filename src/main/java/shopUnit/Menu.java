@@ -1,12 +1,14 @@
 package shopUnit;
 
+import java.time.LocalTime;
 import java.util.stream.Collectors;
 
 public class Menu {
     IOService ioService = new IOService();
 
     public void start() {
-        Shop shop = ioService.readObject("src/main/java/shopUnit/save.bat");
+        Shop shop = ioService.jsonToObject("src/main/java/shopUnit/shopFile.json");
+        ;
         if (shop == null) {
             shop = new Shop();
         }
@@ -25,13 +27,13 @@ public class Menu {
             );
             System.out.print("|->");
 
-            switch (ioService.getInt(0, 4)) {
+            switch (ioService.getInt(0, 6)) {
                 case 1 -> addingFunction(shop);
                 case 2 -> printFunction(shop);
                 case 3 -> editFunction(shop);
                 case 4 -> removeFunction(shop);
                 case 0 -> {
-                    ioService.saveObject("src/main/java/shopUnit/save.bat", shop);
+                    ioService.objectToJson(shop, "src/main/java/shopUnit/shopFile.json");
                     System.out.println("Завершение программы...");
                     return;
                 }
@@ -75,7 +77,7 @@ public class Menu {
         System.out.print("Введите id нового продукта: ");
         int id = ioService.getInt(0, Integer.MAX_VALUE);
 
-        shop.addProduct(new Product(id, name, price));
+        shop.addProduct(new Product(id, name, price, LocalTime.now()));
     }
 
     private void sortByRange(Shop shop, int outputLocation) {

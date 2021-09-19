@@ -1,5 +1,7 @@
 package shopUnit;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -8,6 +10,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Shop implements Serializable {
+
+    @JsonProperty("list")
     private List<Product> list;
 
     public Shop() {

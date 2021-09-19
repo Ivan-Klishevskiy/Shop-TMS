@@ -1,5 +1,12 @@
 package shopUnit;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.*;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -7,8 +14,29 @@ import java.util.regex.Pattern;
 public class IOService {
     private Scanner sc;
 
-    public <T> T readObject(String way)  {
-        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(way))){
+    public void objectToJson(Shop shop, String filename) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            mapper.writeValue(new File(filename), shop);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Shop jsonToObject(String filename) {
+        ObjectMapper mapper = new ObjectMapper();
+        try (FileReader reader = new FileReader(filename)) {
+            return  (Shop) mapper.readValue(new File(filename), Shop.class);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public <T> T readObject(String way) {
+        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(way))) {
             return (T) objectInputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -16,7 +44,7 @@ public class IOService {
         return null;
     }
 
-    public <T>void saveObject(String way, T object) {
+    public <T> void saveObject(String way, T object) {
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(way))) {
             objectOutputStream.writeObject(object);
         } catch (IOException e) {
@@ -59,7 +87,7 @@ public class IOService {
 
             if (Pattern.matches("(^[A-ZА-Я]\\s?([a-zа-я]\\s?)*(\\d*\\s?)*)", str)) {
                 return str;
-            }else{
+            } else {
                 System.out.println("Ошибка ввода.");
             }
         }
