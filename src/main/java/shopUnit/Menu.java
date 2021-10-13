@@ -35,11 +35,7 @@ public class Menu {
                 case 4 -> removeFunction(shop);
                 case 5 -> {
                     Shop finalShop = shop;
-                    Runnable runnable = () -> {
-                        ioService.writeInFile("src/main/java/shopUnit/report.txt", finalShop.getList().toString());
-                    };
-                    Thread thread = new Thread(runnable);
-                    thread.start();
+                    new Thread(()->ioService.writeInFile("src/main/java/shopUnit/report.txt", finalShop.getList().toString())).start();
                 }
                 case 0 -> {
                     ioService.objectToJson(shop, "src/main/java/shopUnit/shopFile.json");
@@ -102,14 +98,16 @@ public class Menu {
                     .filter(i -> i.getPrice() <= upperBound)
                     .forEach(System.out::print);
         } else {
-            ioService.writeInFile("src/ShopUnit12/ListProduct.txt", shop
+            new Thread(
+                    ()->ioService.writeInFile("src/ShopUnit12/ListProduct.txt", shop
                     .getList()
                     .stream()
                     .filter(x -> x.getPrice() >= lowerBound)
                     .filter(i -> i.getPrice() <= upperBound)
                     .map(Product::toString)
                     .collect(Collectors.toList())
-                    .toString());
+                    .toString()))
+                    .start();
         }
 
     }
