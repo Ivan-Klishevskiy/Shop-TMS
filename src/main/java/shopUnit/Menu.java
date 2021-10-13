@@ -152,7 +152,7 @@ public class Menu {
         if (outputLocation == 1) {
             shop.printList();
         } else {
-            ioService.writeInFile("src/main/java/shopUnit/ListProduct.txt", shop.toString());
+            new Thread(()->ioService.writeInFile("src/main/java/shopUnit/ListProduct.txt", shop.toString())).start();
         }
     }
 }
