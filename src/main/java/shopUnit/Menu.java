@@ -8,7 +8,7 @@ public class Menu {
 
     public void start() {
         Shop shop = ioService.jsonToObject("src/main/java/shopUnit/shopFile.json");
-        ;
+
         if (shop == null) {
             shop = new Shop();
         }
@@ -21,6 +21,7 @@ public class Menu {
                             |_2)_Вывод всех товаров_____________|
                             |_3)_Редактировать товар____________|
                             |_4)_Удалить товар__________________|
+                            |-5)_Формирование отчета____________|
                             |_0)_Выход из программы_____________|
                             *************************************
                             """
@@ -32,6 +33,10 @@ public class Menu {
                 case 2 -> printFunction(shop);
                 case 3 -> editFunction(shop);
                 case 4 -> removeFunction(shop);
+                case 5 -> {
+                    Shop finalShop = shop;
+                    new Thread(()->ioService.writeInFile("src/main/java/shopUnit/report.txt", finalShop.getList().toString())).start();
+                }
                 case 0 -> {
                     ioService.objectToJson(shop, "src/main/java/shopUnit/shopFile.json");
                     System.out.println("Завершение программы...");
@@ -93,14 +98,16 @@ public class Menu {
                     .filter(i -> i.getPrice() <= upperBound)
                     .forEach(System.out::print);
         } else {
-            ioService.writeInFile("src/ShopUnit12/ListProduct.txt", shop
+            new Thread(
+                    ()->ioService.writeInFile("src/ShopUnit12/ListProduct.txt", shop
                     .getList()
                     .stream()
                     .filter(x -> x.getPrice() >= lowerBound)
                     .filter(i -> i.getPrice() <= upperBound)
                     .map(Product::toString)
                     .collect(Collectors.toList())
-                    .toString());
+                    .toString()))
+                    .start();
         }
 
     }
@@ -143,7 +150,7 @@ public class Menu {
         if (outputLocation == 1) {
             shop.printList();
         } else {
-            ioService.writeInFile("src/ShopUnit12/ListProduct.txt", shop.toString());
+            new Thread(()->ioService.writeInFile("src/main/java/shopUnit/ListProduct.txt", shop.toString())).start();
         }
     }
 }
