@@ -1,6 +1,13 @@
 package shopUnit;
 
+import myDataBase.jdbc_connection.JdbcConnection;
+import myDataBase.repository.BaseRepository;
+import myDataBase.repository.impl.ProductsRepositoryImpl;
+import service.BaseService;
+import service.impl.ProductsServiceImpl;
+
 import java.time.LocalTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Menu {
@@ -21,9 +28,10 @@ public class Menu {
                             |_2)_Вывод всех товаров_____________|
                             |_3)_Редактировать товар____________|
                             |_4)_Удалить товар__________________|
-                            |-5)_Формирование отчета____________|
+                            |_5)_Формирование отчета____________|
+                            |_6)_Функции БД_____________________|
                             |_0)_Выход из программы_____________|
-                            *************************************
+                            |***********************************|
                             """
             );
             System.out.print("|->");
@@ -37,6 +45,7 @@ public class Menu {
                     Shop finalShop = shop;
                     new Thread(()->ioService.writeInFile("src/main/java/shopUnit/report.txt", finalShop.getList().toString())).start();
                 }
+                case 6 -> sqlFunction(shop);
                 case 0 -> {
                     ioService.objectToJson(shop, "src/main/java/shopUnit/shopFile.json");
                     System.out.println("Завершение программы...");
@@ -53,6 +62,75 @@ public class Menu {
             System.out.println("\n\n\n\n\n\n\n\n\n\n");
 
         } while (true);
+    }
+
+    private void sqlFunction(Shop shop){
+        JdbcConnection jdbcCon=new JdbcConnection();
+        BaseRepository repository = new ProductsRepositoryImpl(jdbcCon);
+        BaseService<Product>service=new ProductsServiceImpl(repository);
+        System.out.print(
+                """
+                        **************************************
+                        |_1)_Сохранить все обьекты в БД______|
+                        |_2)_Удалить продукт из БД___________|
+                        |_3)_Найти продукт по id_____________|
+                        |_4)_Обновить продукт в БД___________|
+                        |_5)_Вывести все продукты из БД______|
+                        |_6)_Добавить продукт в БД___________|
+                        **************************************
+                        |->
+                        """
+
+        );
+        switch (ioService.getInt(0, 6)) {
+            case 1->{
+                for (Product product : shop.getList()) {
+                    service.save(product);
+                }
+            }
+            case 2->{
+                System.out.println("Введите Id удаляемого товара:");
+                System.out.println(service.deleteById(ioService.getInt(Integer.MIN_VALUE, Integer.MAX_VALUE)));
+            }
+            case 3->{
+                System.out.println("Введите Id искомого товара:");
+                System.out.println(service.find(ioService.getInt(Integer.MIN_VALUE, Integer.MAX_VALUE)));
+            }
+            case 4->{
+                System.out.print("Введите название нового продукта: ");
+                String name = ioService.getString();
+
+                System.out.print("Введите цену нового продукта: ");
+                int price = ioService.getInt(0, Integer.MAX_VALUE);
+
+                System.out.print("Введите id нового продукта: ");
+                int id = ioService.getInt(0, Integer.MAX_VALUE);
+
+                Product temp=new Product(id, name, price, LocalTime.now());
+
+                System.out.println(service.update(temp));
+            }
+            case 5->{
+                List<Product> allProducts = service.findAll();
+                for (Product product : allProducts) {
+                    System.out.println(product);
+                }
+            }
+            case 6->{
+                System.out.print("Введите название нового продукта: ");
+                String name = ioService.getString();
+
+                System.out.print("Введите цену нового продукта: ");
+                int price = ioService.getInt(0, Integer.MAX_VALUE);
+
+                System.out.print("Введите id нового продукта: ");
+                int id = ioService.getInt(0, Integer.MAX_VALUE);
+
+                Product temp=new Product(id, name, price, LocalTime.now());
+
+                System.out.println(service.save(temp));
+            }
+        }
     }
 
     private void removeFunction(Shop shop) {
