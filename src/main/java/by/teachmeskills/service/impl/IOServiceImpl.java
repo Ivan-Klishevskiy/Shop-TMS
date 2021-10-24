@@ -1,17 +1,14 @@
-package shopUnit;
+package by.teachmeskills.service.impl;
 
-import com.fasterxml.jackson.core.JsonParser;
+import by.teachmeskills.model.Shop;
+import by.teachmeskills.service.IOService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-public class IOService {
+public class IOServiceImpl implements IOService {
     private Scanner sc;
 
     public void objectToJson(Shop shop, String filename) {

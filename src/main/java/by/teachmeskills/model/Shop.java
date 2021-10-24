@@ -1,5 +1,6 @@
-package shopUnit;
+package by.teachmeskills.model;
 
+import by.teachmeskills.model.Product;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;

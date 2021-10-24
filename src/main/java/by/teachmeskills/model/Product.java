@@ -1,4 +1,4 @@
-package shopUnit;
+package by.teachmeskills.model;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
